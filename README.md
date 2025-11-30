@@ -2,10 +2,9 @@
 
 ## Overview
 
-This project implements a parser for **Pyc**.<br> Python-like syntax + C-like structural elements.
+This project implements a parser for **Pyc**: Python-like syntax + C-like structural elements.
 
-In the previous homework assignment, I was working on lexing normal Python code.<br>
-However, for this assignment, I've changed things up by creating a modified language that uses braces and semicolons instead of Python's indentation-based syntax.
+In the previous homework assignment, I was working on lexing normal Python code. However, for this assignment, I've changed things up by creating a modified language that uses braces and semicolons instead of Python's indentation-based syntax.
 
 ## Language Description
 
@@ -70,7 +69,7 @@ python -m venv venv
 # Activate virtual environment
 # On Windows:
 venv\Scripts\activate
-# On Unix/MacOS:
+# On Linux/MacOS:
 source venv/bin/activate
 
 # Install PLY
