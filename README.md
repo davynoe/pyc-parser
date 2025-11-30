@@ -135,7 +135,6 @@ minipython/
 ├── parser.py         # Syntax analyzer (parser)
 ├── ast.py            # Abstract Syntax Tree node definitions
 ├── run_parser.py     # Main script to run the parser
-├── parsetab.py       # Auto-generated parsing tables (by PLY)
 ├── README.md         # This file
 └── tests/            # Test files directory
     ├── valid_*.pc    # Valid Pyc programs

@@ -13,7 +13,6 @@ tokens = (
     'LPAREN','RPAREN',
     'LBRACE','RBRACE','LBRACKET','RBRACKET',
     'COMMA','SEMICOLON',
-    'COLON',
 )
 
 # Reserved keywords
@@ -58,7 +57,6 @@ t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
 t_COMMA   = r','
 t_SEMICOLON = r';'
-t_COLON = r':'
 
 t_ignore = ' \t'
 
