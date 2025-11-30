@@ -1,0 +1,4 @@
+if () {
+  print("error");
+}
+
