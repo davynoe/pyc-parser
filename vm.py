@@ -215,8 +215,10 @@ class VM:
             func_name = self.bytecode.names[func_name_idx]
             
             if func_name in self.bytecode.functions:
-                func_code = self.bytecode.functions[func_name]
-                self.functions[func_name] = FunctionObject(func_name, func_code, self.bytecode)
+                func_entry = self.bytecode.functions[func_name]
+                func_code = func_entry.get("code", [])
+                func_params = func_entry.get("params", [])
+                self.functions[func_name] = FunctionObject(func_name, func_code, func_params, self.bytecode)
         
         else:
             raise Exception(f"Unknown opcode: {opcode}")
@@ -224,26 +226,32 @@ class VM:
 class FunctionObject:
     """Represents a callable function"""
     
-    def __init__(self, name: str, code: List[int], bytecode: Bytecode):
+    def __init__(self, name: str, code: List[int], params: List[str], bytecode: Bytecode):
         self.name = name
         self.code = code
+        self.params = params
         self.bytecode = bytecode
     
     def call(self, vm: 'VM', args: List[Any]) -> Any:
         """Execute the function"""
-        # Create a new VM context for the function
+        # Save VM state
         old_pc = vm.pc
         old_code = vm.code
         old_halted = vm.halted
         old_return = vm.return_value
-        old_vars = vm.variables.copy()
+        old_vars = vm.variables
         
+        # New execution context
         vm.pc = 0
         vm.code = self.code
         vm.halted = False
         vm.return_value = None
+        # Shallow copy of variables for isolation
+        vm.variables = old_vars.copy()
         
-        # TODO: Bind parameters to arguments
+        # Bind parameters to arguments
+        for idx, param in enumerate(self.params):
+            vm.variables[param] = args[idx] if idx < len(args) else None
         
         # Execute function code
         while vm.pc < len(vm.code) and not vm.halted:

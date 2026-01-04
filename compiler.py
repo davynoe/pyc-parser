@@ -38,7 +38,7 @@ def compile_and_run(source_code: str, stage: str = 'execute', verbose: bool = Fa
     if verbose or stage == 'ast':
         if stage == 'ast':
             print("=== AST ===")
-        print(ast.to_sexpr())
+        print(ast.to_tree())
     
     if stage == 'ast':
         return ast
@@ -64,8 +64,6 @@ def compile_and_run(source_code: str, stage: str = 'execute', verbose: bool = Fa
     bytecode = codegen.generate(ir)
     
     if verbose or stage == 'code':
-        if stage == 'code' and not verbose:
-            print("=== Bytecode ===")
         print(bytecode)
     
     if stage == 'code':

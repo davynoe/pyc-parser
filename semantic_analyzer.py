@@ -57,7 +57,8 @@ class IR:
     """Intermediate Representation"""
     def __init__(self):
         self.instructions: List[IRInstruction] = []
-        self.functions: Dict[str, List[IRInstruction]] = {}
+        # functions[name] = (instrs, params)
+        self.functions: Dict[str, Tuple[List[IRInstruction], List[str]]] = {}
         self.globals: List[str] = []
         self.label_counter = 0
     
@@ -79,7 +80,7 @@ class IR:
         
         if self.functions:
             result += "\n=== Functions ===\n"
-            for fname, instrs in self.functions.items():
+            for fname, (instrs, params) in self.functions.items():
                 result += f"\nFunc {fname}:\n"
                 for instr in instrs:
                     result += "  " + str(instr) + "\n"
@@ -203,7 +204,7 @@ class SemanticAnalyzer:
         self.ir.emit("RETURN_VALUE", None)  # Default return None
         
         # Store function IR
-        self.ir.functions[node.name] = self.ir.instructions
+        self.ir.functions[node.name] = (self.ir.instructions, node.params)
         
         # Restore context
         self.ir.instructions = old_instructions

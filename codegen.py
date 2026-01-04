@@ -12,7 +12,8 @@ class Bytecode:
         self.code: List[int] = []  # Bytecode
         self.constants: List[Any] = []  # Constant pool
         self.names: List[str] = []  # Name pool (variable/function names)
-        self.functions: Dict[str, List[int]] = {}  # Compiled functions
+        # functions[name] = {"code": List[int], "params": List[str]}
+        self.functions: Dict[str, Dict[str, Any]] = {}  # Compiled functions
         self.label_positions: Dict[str, int] = {}  # Label -> bytecode position
     
     def __repr__(self):
@@ -150,10 +151,10 @@ class CodeGenerator:
         self._generate_code(ir.instructions)
         
         # Generate functions
-        for func_name, instrs in ir.functions.items():
+        for func_name, (instrs, params) in ir.functions.items():
             old_code = self.current_code
-            self.bytecode.functions[func_name] = []
-            self.current_code = self.bytecode.functions[func_name]
+            self.bytecode.functions[func_name] = {"code": [], "params": params}
+            self.current_code = self.bytecode.functions[func_name]["code"]
             self._generate_code(instrs)
             self.current_code = old_code
         
@@ -162,7 +163,7 @@ class CodeGenerator:
     def _collect_resources(self, ir: IR):
         """Collect constants and names from IR"""
         self._collect_from_instrs(ir.instructions)
-        for instrs in ir.functions.values():
+        for instrs, _params in ir.functions.values():
             self._collect_from_instrs(instrs)
     
     def _collect_from_instrs(self, instrs: List[IRInstruction]):
