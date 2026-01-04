@@ -196,7 +196,8 @@ class VM:
             self.stack.append(items)
         
         elif opcode == OPCODES['SETUP_LOOP']:
-            pass
+            iterable = self.stack.pop()
+            self.loop_stack.append({"iterator": iter(iterable)})
         
         elif opcode == OPCODES['FOR_ITER']:
             target = self.code[self.pc]
@@ -205,9 +206,15 @@ class VM:
             self.pc += 1
             
             var_name = self.bytecode.names[var_idx]
-            
-            # For now, just a simple implementation
-            pass
+            if not self.loop_stack:
+                raise Exception("FOR_ITER without loop context")
+            iterator = self.loop_stack[-1]["iterator"]
+            try:
+                value = next(iterator)
+                self.variables[var_name] = value
+            except StopIteration:
+                self.loop_stack.pop()
+                self.pc = target
         
         elif opcode == OPCODES['DEF_FUNCTION']:
             func_name_idx = self.code[self.pc]
