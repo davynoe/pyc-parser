@@ -17,8 +17,7 @@ class Bytecode:
         self.label_positions: Dict[str, int] = {}  # Label -> bytecode position
     
     def __repr__(self):
-        result = "=== Bytecode ===\n"
-        result += f"Code length: {len(self.code)}\n"
+        result = f"Code length: {len(self.code)}\n"
         result += f"Constants: {self.constants}\n"
         result += f"Names: {self.names}\n"
         result += f"Functions: {list(self.functions.keys())}\n"

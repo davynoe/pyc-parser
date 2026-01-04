@@ -1,61 +1,20 @@
-# PyC
+# Python with C Syntax – Compiler Project
 
 A full compiler for a custom language that pairs Python-like dynamic semantics with C-style syntax (curly braces, semicolons). It spans lexing through execution on a stack-based virtual machine (VM), illustrating the core compiler stages: lexing, parsing, AST, IR, bytecode generation, and VM execution.
 
 ---
 
-## Language Features
-
-### Data Types
-- Integers
-- Floats  
-- Strings (single or double quoted)
-- Booleans (True, False)
-- None
-- Lists
-
-### Operators
-- Arithmetic: `+`, `-`, `*`, `/`, `%`
-- Comparison: `==`, `!=`, `<`, `>`, `<=`, `>=`
-- Logical: `and`, `or`, `not`
-- Unary: `-`, `+`, `not`
-
-### Statements
-- Variable assignment: `x = 5;`
-- If/else: `if (x > 5) { ... } else { ... }`
-- While loops: `while (x > 0) { ... }`
-- For loops: `for (i in range) { ... }`
-- Function definition: `def func(a, b) { ... }`
-- Return: `return value;`
-- Print: `print(x, y, z);`
-- Pass: `pass;`
-
-### C-like Syntax
-- Semicolons terminate statements
-- Curly braces for blocks
-- Parentheses for function calls and conditions
-
 ## 🏗 Architecture Overview
 
 The compiler follows a classic multi-stage pipeline, targeting custom bytecode executed by a dedicated VM.
 
-```
-Source Code (.pc)
-	│
-	▼
-[1. Lexical Analysis] ──> Token Stream
-	│
-	▼
-[2. Parsing] ──> Abstract Syntax Tree (AST)
-	│
-	▼
-[3. Semantic Analysis] ──> Intermediate Representation (IR)
-	│
-	▼
-[4. Code Generation] ──> Custom Bytecode
-	│
-	▼
-[5. Virtual Machine] ──> Execution (Output)
+```mermaid
+graph TD
+	A[Source Code] -->|Lexer| B(Tokens)
+	B -->|Parser| C(Abstract Syntax Tree - AST)
+	C -->|Semantic Analyzer| D(Intermediate Representation - IR)
+	D -->|Code Generator| E(Bytecode)
+	E -->|Virtual Machine| F[Execution / Output]
 ```
 
 **Tooling choices**
@@ -174,35 +133,10 @@ IR is converted to compact numeric bytecode.
 ## 🚀 End-to-End Execution Trace
 
 **Source**
+
 ```pc
 x = 5 + 3;
 print(x);
-```
-
-**Tokens**
-```
-LexToken(IDENT,'x',1,0)
-LexToken(ASSIGN,'=',1,2)
-LexToken(INT,5,1,4)
-LexToken(PLUS,'+',1,6)
-LexToken(INT,3,1,8)
-LexToken(SEMICOLON,';',1,9)
-LexToken(PRINT,'print',2,11)
-LexToken(LPAREN,'(',2,16)
-LexToken(IDENT,'x',2,17)
-LexToken(RPAREN,')',2,18)
-LexToken(SEMICOLON,';',2,19)
-```
-
-**AST**
-```
-Program
-|-- Assign x
-|   -- Binary '+'
-|       -- Literal 5
-|       -- Literal 3
--- Print
-    -- Var x
 ```
 
 **IR**
@@ -217,21 +151,18 @@ PRINT 1
 ```
 
 **Bytecode (Disassembly)**
-```
-Constants: [5, 3]
-Names: ['x']
-Functions: []
 
-Disassembly:
-   0  LOAD_CONST           0 (= 5)
-   2  LOAD_CONST           1 (= 3)
-   4  ADD
-   5  STORE                0 (= x)
-   7  LOAD                 0 (= x)
-   9  PRINT                [1]
+```
+0  LOAD_CONST 0 (=5)
+2  LOAD_CONST 1 (=3)
+4  ADD
+5  STORE 0 (=x)
+7  LOAD 0 (=x)
+9  PRINT 1
 ```
 
 **Output**
+
 ```
 8
 ```
@@ -265,3 +196,25 @@ python compiler.py script.pc -v
 ```bash
 python compiler.py tests/valid_arithmetic.pc
 ```
+
+---
+
+## 📝 Language Reference
+
+**Data Types**
+
+`int`, `float`, `string`, `bool`, `list`
+
+**Control Structures**
+
+```pc
+if (x > 0) {
+	print("Positive");
+}
+```
+
+**Operators**
+
+- Arithmetic: `+ - * / %`
+- Logic: `and or not`
+- Comparison: `== != < > <= >=`

@@ -4,7 +4,7 @@ from semantic_analyzer import SemanticAnalyzer
 from codegen import CodeGenerator
 from vm import VM
 
-def compile_and_run(source_code: str, stage: str = 'execute', verbose: bool = False):
+def compile_and_run(source_code: str, stage: str = 'execute', verbose: bool = False) -> any:
     """
     Complete compilation pipeline:
     Source Code -> Lexer -> Parser -> AST -> Semantic Analyzer -> IR -> CodeGen -> Bytecode -> VM
@@ -15,77 +15,55 @@ def compile_and_run(source_code: str, stage: str = 'execute', verbose: bool = Fa
         verbose: Whether to print detailed output
     """
     
-    # Stage 1a: Tokenization
-    if stage == 'tokens':
-        lexer = build_lexer()
-        lexer.input(source_code)
-        print("=== Tokens ===")
-        for tok in lexer:
-            print(tok)
-        return None
-    
-    # Stage 1b: Lex and Parse
-    if verbose:
-        print("=== Stage 1: Lexing and Parsing ===")
+    # Lexing
     lexer = build_lexer()
-    parser = build_parser()
-    ast = parser.parse(source_code, lexer=lexer)
+    if verbose: print("=== Tokens ===")
+    lexer.input(source_code)
+    if verbose or stage == 'tokens':
+        for tok in lexer: print(tok)
+    if stage == 'tokens': return 0
     
+    # Parsing
+    parser = build_parser()
+    if verbose: print("\n=== AST ===")
+    ast = parser.parse(source_code, lexer=lexer)
     if not ast:
         print("ERROR: Failed to parse")
-        return None
-    
+        return 1
     if verbose or stage == 'ast':
-        if stage == 'ast':
-            print("=== AST ===")
         print(ast.to_tree())
+    if stage == 'ast': return 0
     
-    if stage == 'ast':
-        return ast
-    
-    # Stage 2: Semantic Analysis (generate IR)
-    if verbose:
-        print("\n=== Stage 2: Semantic Analysis ===")
+    # Semantic Analysis
     analyzer = SemanticAnalyzer()
+    if verbose: print("\n=== Semantic Analysis ===")
     ir = analyzer.analyze(ast)
-    
     if verbose or stage == 'ir':
-        if stage == 'ir' and not verbose:
-            print("=== IR ===")
         print(ir)
+    if stage == 'ir': return 0
     
-    if stage == 'ir':
-        return ir
-    
-    # Stage 3: Code Generation (IR -> Bytecode)
-    if verbose:
-        print("\n=== Stage 3: Code Generation ===")
+    # Code Generation
     codegen = CodeGenerator()
+    if verbose: print("\n=== Code Generation ===")
     bytecode = codegen.generate(ir)
-    
     if verbose or stage == 'code':
         print(bytecode)
+    if stage == 'code': return 0
     
-    if stage == 'code':
-        return bytecode
-    
-    # Stage 4: Virtual Machine Execution
-    if verbose:
-        print("\n=== Stage 4: Execution ===")
+    # Execution
     vm = VM(bytecode)
+    if verbose: print("\n=== Execution ===")
     result = vm.execute()
-    
-    if verbose:
-        print(f"\nResult: {result}")
-    
-    return result
+    return 0
 
 if __name__ == '__main__':
     import sys
-    
-    # Parse command-line arguments
-    verbose = '-v' in sys.argv or '--verbose' in sys.argv
-    
+
+    # Determine verbosity
+    verbose = False # Default
+    if '-v' in sys.argv or '--verbose' in sys.argv:
+        verbose = True
+        
     # Determine stage
     stage = 'execute'  # Default
     if '-t' in sys.argv or '--tokens' in sys.argv:
@@ -100,7 +78,7 @@ if __name__ == '__main__':
         stage = 'execute'
     
     # Get input file or stdin
-    flags = {'-v', '--verbose', '-t', '--tokens', '-a', '--ast', '-ir', '--ir', 
+    flags = {'-t', '--tokens', '-a', '--ast', '-ir', '--ir', 
              '-c', '--code', '-e', '--execute'}
     input_file = None
     

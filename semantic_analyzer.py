@@ -73,8 +73,7 @@ class IR:
         return label
     
     def __repr__(self):
-        result = "=== IR ===\n"
-        result += "=== Global Instructions ===\n"
+        result = "=== Global Instructions ===\n"
         for instr in self.instructions:
             result += str(instr) + "\n"
         
