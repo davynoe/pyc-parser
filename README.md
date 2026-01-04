@@ -206,7 +206,6 @@ Program
 ```
 
 **IR**
-
 ```
 LOAD_CONST 5
 LOAD_CONST 3
