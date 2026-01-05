@@ -1,0 +1,4 @@
+def func() {
+    y = 3;
+}
+print(y);

@@ -1,7 +1,7 @@
 # parser.py
 import ply.yacc as yacc
 from lexer import tokens, build_lexer
-import ast as astmod
+import astmod
 
 # Precedence rules to handle ambiguity
 precedence = (
