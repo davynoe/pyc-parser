@@ -3,7 +3,7 @@ Semantic Analyzer - Traverses AST and generates Intermediate Representation (IR)
 Performs symbol table management and basic type tracking
 """
 
-import ast as astmod
+import astmod
 from typing import Dict, List, Any, Optional, Tuple
 
 class IRInstruction:
